@@ -7,22 +7,18 @@ WIN = pygame.display.set_mode((SCREEN_WIGHT, SCREEN_HEIGHT))
 BG = pygame.transform.scale(pygame.image.load('pics/background.png'), (SCREEN_WIGHT, SCREEN_HEIGHT))
 pygame.display.set_caption('Smashbros on wish')
 
-"""race_track_img = pygame.image.load('pics/race_track.png')
-race_track = pygame.transform.scale(race_track_img, (SCREEN_WIGHT, SCREEN_HEIGHT))
-race_track_mask = pygame.mask.from_surface(race_track)
-finish_line_img = pygame.image.load('pics/finish_line.png')
-finish_line = pygame.transform.scale(finish_line_img, (135, 14))
-finish_mask = pygame.mask.from_surface(finish_line)
-mask = finish_mask.to_surface()"""
+plattform_img = pygame.image.load('pics/plattform.png')
 
 
-def draw_window(background):
+def draw_window(background, plattform):
     WIN.blit(BG, (background.x, background.y))
+    WIN.blit(plattform_img, (plattform.x, plattform.y))
     pygame.display.flip()
 
 
 def main():
     background = pygame.Rect(0, 0, SCREEN_WIGHT, SCREEN_HEIGHT)
+    plattform = pygame.Rect(150, 500, 0, 0)
 
     running = True
     while running:
@@ -30,7 +26,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        draw_window(background)
+        draw_window(background, plattform)
 
 
 if __name__ == '__main__':
