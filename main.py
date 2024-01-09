@@ -9,7 +9,7 @@ pygame.display.set_caption('Smashbros on wish')
 plattform_img = pygame.image.load('pics/plattform.png')
 
 GRAVITY = 0.25
-TERMINAL_VELOCITY = 1
+TERMINAL_VELOCITY = 0.5
 JUMP = -7
 
 
@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.sprites = []
         self.is_animating = False
+        self.is_jump = True
         self.sprites.append(pygame.image.load('player/run/0.png'))
         self.sprites.append(pygame.image.load('player/run/1.png'))
         self.sprites.append(pygame.image.load('player/run/2.png'))
@@ -51,13 +52,18 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = self.y
 
     def jump(self):
-        self.velocity = JUMP
+        if self.is_jump:
+            self.velocity = JUMP
+            self.is_jump = False
 
     def left(self):
         self.x -= 1
 
     def right(self):
         self.x += 1
+
+    def pos(self):
+        return self.y
 
 
 moving_sprites = pygame.sprite.Group()
@@ -85,7 +91,12 @@ def main():
 
         draw_window(background, plattform)
         player.update()
-        #player.gravity()
+
+        player.gravity()
+        while player.pos() > 507:
+            player.y = 507
+            player.velocity = 0
+            player.is_jump = True
         """links = (156, 507)
         rechts = (990, 507)"""
 
