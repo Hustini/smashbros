@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 pygame.init()
@@ -62,8 +64,16 @@ class Player(pygame.sprite.Sprite):
     def right(self):
         self.x += 1
 
-    def pos(self):
+    def pos_x(self):
+        return self.x
+
+    def pos_y(self):
         return self.y
+
+    def check_exit(self):
+        if self.y > 500:
+            sys.exit()
+
 
 
 moving_sprites = pygame.sprite.Group()
@@ -93,12 +103,11 @@ def main():
         player.update()
 
         player.gravity()
-        while player.pos() > 507:
-            player.y = 507
+        while player.pos_y() > 480 and 156 < player.pos_x() < 990:
+            player.check_exit()
+            player.y = 480
             player.velocity = 0
             player.is_jump = True
-        """links = (156, 507)
-        rechts = (990, 507)"""
 
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_w]:
