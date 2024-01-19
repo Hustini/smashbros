@@ -15,8 +15,23 @@ TERMINAL_VELOCITY = 0.5
 JUMP = -7
 
 
-class Player(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((10, 5))
+        self.image.fill((175, 155, 96))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 1
+
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.x > SCREEN_WIGHT:
+            self.kill()
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x, y, animation_dir='player/run/', frame=6):
         super().__init__()
         self.sprites = []
         self.is_animating = False
@@ -34,6 +49,7 @@ class Player(pygame.sprite.Sprite):
         self.velocity = 0
         self.y = y
         self.x = x
+        self.reload = 5
 
     def animate(self):
         self.is_animating = True
@@ -74,11 +90,18 @@ class Player(pygame.sprite.Sprite):
         if self.y > 500:
             sys.exit()
 
+    def bullet(self):
+        self.reload += 0.05
+        if self.reload >= 5:
+            bullet = Bullet(self.rect.right, self.rect.centery)
+            bullet_group.add(bullet)
+            self.reload = 0
 
 
 moving_sprites = pygame.sprite.Group()
-player = Player(100, 100)
+player = Player(200, 100)
 moving_sprites.add(player)
+bullet_group = pygame.sprite.Group()
 
 
 def draw_window(background, plattform):
@@ -86,6 +109,8 @@ def draw_window(background, plattform):
     WIN.blit(plattform_img, (plattform.x, plattform.y))
     moving_sprites.draw(WIN)
     moving_sprites.update()
+    bullet_group.draw(WIN)
+    bullet_group.update()
     pygame.display.flip()
 
 
@@ -103,8 +128,8 @@ def main():
         player.update()
 
         player.gravity()
+        player.check_exit()
         while player.pos_y() > 480 and 156 < player.pos_x() < 990:
-            player.check_exit()
             player.y = 480
             player.velocity = 0
             player.is_jump = True
@@ -118,6 +143,8 @@ def main():
         if keys_pressed[pygame.K_d]:
             player.animate()
             player.right()
+        if keys_pressed[pygame.K_SPACE]:
+            player.bullet()
 
 
 if __name__ == '__main__':
