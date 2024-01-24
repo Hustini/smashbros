@@ -101,7 +101,9 @@ class Player(pygame.sprite.Sprite):
 
 moving_sprites = pygame.sprite.Group()
 player = Player(200, 100)
+player_2 = Player(500, 100, 'enemy/run/')
 moving_sprites.add(player)
+moving_sprites.add(player_2)
 bullet_group = pygame.sprite.Group()
 
 
@@ -127,13 +129,21 @@ def main():
 
         draw_window(background, plattform)
         player.update()
+        player_2.update()
 
         player.gravity()
+        player_2.gravity()
         player.check_exit()
+        player_2.check_exit()
         while player.pos_y() > 480 and 156 < player.pos_x() < 990:
             player.y = 480
             player.velocity = 0
             player.is_jump = True
+
+        while player_2.pos_y() > 480 and 156 < player_2.pos_x() < 990:
+            player_2.y = 480
+            player_2.velocity = 0
+            player_2.is_jump = True
 
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_w]:
@@ -146,6 +156,17 @@ def main():
             player.right()
         if keys_pressed[pygame.K_SPACE]:
             player.bullet()
+
+        if keys_pressed[pygame.K_UP]:
+            player_2.jump()
+        if keys_pressed[pygame.K_LEFT]:
+            player_2.animate()
+            player_2.left()
+        if keys_pressed[pygame.K_RIGHT]:
+            player_2.animate()
+            player_2.right()
+        if keys_pressed[pygame.K_p]:
+            player_2.bullet()
 
 
 if __name__ == '__main__':
