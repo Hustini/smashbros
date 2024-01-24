@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pygame
@@ -11,7 +12,7 @@ pygame.display.set_caption('Smashbros on wish')
 plattform_img = pygame.image.load('pics/plattform.png')
 
 GRAVITY = 0.25
-TERMINAL_VELOCITY = 0.5
+TERMINAL_VELOCITY = 1
 JUMP = -7
 
 
@@ -31,18 +32,13 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, animation_dir='player/run/', frame=6):
+    def __init__(self, x, y, animation_dir='player/run/', frames=6):
         super().__init__()
         self.sprites = []
         self.is_animating = False
         self.is_jump = True
-        self.sprites.append(pygame.image.load('player/run/0.png'))
-        self.sprites.append(pygame.image.load('player/run/1.png'))
-        self.sprites.append(pygame.image.load('player/run/2.png'))
-        self.sprites.append(pygame.image.load('player/run/3.png'))
-        self.sprites.append(pygame.image.load('player/run/4.png'))
-        self.sprites.append(pygame.image.load('player/run/5.png'))
         self.current_sprite = 0
+        self.load_images(animation_dir, frames)
         self.image = self.sprites[self.current_sprite]
         self.rect = self.image.get_rect()
         self.rect.topleft = [x, y]
@@ -50,6 +46,11 @@ class Player(pygame.sprite.Sprite):
         self.y = y
         self.x = x
         self.reload = 5
+
+    def load_images(self, directory, frames):
+        for i in range(frames):
+            path = os.path.join(directory, f'{i}.png')
+            self.sprites.append(pygame.image.load(path))
 
     def animate(self):
         self.is_animating = True
@@ -64,7 +65,7 @@ class Player(pygame.sprite.Sprite):
                 self.is_animating = False
             self.image = self.sprites[int(self.current_sprite)]
 
-    def gravity(self):
+    def gravity(self):# needs fixing
         self.y += self.velocity
         self.velocity = min(self.velocity + GRAVITY, TERMINAL_VELOCITY)
         self.rect.y = self.y
