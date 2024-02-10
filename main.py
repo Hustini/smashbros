@@ -109,6 +109,13 @@ class Player(pygame.sprite.Sprite):
             bullet_group.add(bullet)
             self.reload = 0
 
+    def reduce_health(self):
+        self.health -= 1
+
+    def check_health(self):
+        if self.health == 0:
+            self.kill()
+
 
 moving_sprites = pygame.sprite.Group()
 player = Player(200, 100)
@@ -157,8 +164,11 @@ def main():
             player_2.is_jump = True
 
         bullet_player_collision = pygame.sprite.groupcollide(bullet_group, moving_sprites, True, False)
-        for bullet in bullet_player_collision:
-            print('Collision')
+        for bullet, players in bullet_player_collision.items():
+            for hit_player in players:
+                hit_player.reduce_health()
+                hit_player.check_health()
+                print('Collision')
 
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_w]:
