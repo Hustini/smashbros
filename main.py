@@ -27,7 +27,7 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x += self.speed
-        if self.rect.x > SCREEN_WIGHT:
+        if self.rect.x > SCREEN_WIGHT or self.rect.x < 0:  # works but if performance issue then probably here
             self.kill()
 
 
