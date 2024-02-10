@@ -47,6 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.reload = 5
         self.direction = 'right'
+        self.health = 5
 
     def load_images(self, directory, frames):
         for i in range(frames):
@@ -101,10 +102,10 @@ class Player(pygame.sprite.Sprite):
         if self.y > 500:
             sys.exit()
 
-    def bullet(self, speed):
+    def bullet(self, speed, distance):
         self.reload += 0.05
         if self.reload >= 5:
-            bullet = Bullet(self.rect.right, self.rect.centery, speed)
+            bullet = Bullet(self.rect.right + distance, self.rect.centery, speed)
             bullet_group.add(bullet)
             self.reload = 0
 
@@ -155,6 +156,10 @@ def main():
             player_2.velocity = 0
             player_2.is_jump = True
 
+        bullet_player_collision = pygame.sprite.groupcollide(bullet_group, moving_sprites, True, False)
+        for bullet in bullet_player_collision:
+            print('Collision')
+
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_w]:
             player.jump()
@@ -166,9 +171,9 @@ def main():
             player.right()
         if keys_pressed[pygame.K_SPACE]:
             if player.facing() == 'right':
-                player.bullet(1)
+                player.bullet(1, 20)
             if player.facing() == 'left':
-                player.bullet(-1)
+                player.bullet(-1, -48)
 
         """if keys_pressed[pygame.K_UP]:
             player_2.jump()
