@@ -17,13 +17,13 @@ JUMP = -7
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, speed):
         super().__init__()
         self.image = pygame.Surface((10, 5))
         self.image.fill((175, 155, 96))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.speed = 1
+        self.speed = speed
 
     def update(self):
         self.rect.x += self.speed
@@ -46,6 +46,7 @@ class Player(pygame.sprite.Sprite):
         self.y = y
         self.x = x
         self.reload = 5
+        self.direction = 'right'
 
     def load_images(self, directory, frames):
         for i in range(frames):
@@ -65,7 +66,7 @@ class Player(pygame.sprite.Sprite):
                 self.is_animating = False
             self.image = self.sprites[int(self.current_sprite)]
 
-    def gravity(self):# needs fixing
+    def gravity(self):
         self.y += self.velocity
         self.velocity = min(self.velocity + GRAVITY, TERMINAL_VELOCITY)
         self.rect.y = self.y
@@ -77,15 +78,24 @@ class Player(pygame.sprite.Sprite):
 
     def left(self):
         self.x -= 1
+        if self.direction != "left":
+            self.sprites = [pygame.transform.flip(sprite, True, False) for sprite in self.sprites]
+            self.direction = "left"
 
     def right(self):
         self.x += 1
+        if self.direction != "right":
+            self.sprites = [pygame.transform.flip(sprite, True, False) for sprite in self.sprites]
+            self.direction = "right"
 
     def pos_x(self):
         return self.x
 
     def pos_y(self):
         return self.y
+
+    def facing(self):
+        return self.direction
 
     def check_exit(self):
         if self.y > 500:
@@ -94,7 +104,7 @@ class Player(pygame.sprite.Sprite):
     def bullet(self):
         self.reload += 0.05
         if self.reload >= 5:
-            bullet = Bullet(self.rect.right, self.rect.centery)
+            bullet = Bullet(self.rect.right, self.rect.centery, 1)
             bullet_group.add(bullet)
             self.reload = 0
 
@@ -157,7 +167,7 @@ def main():
         if keys_pressed[pygame.K_SPACE]:
             player.bullet()
 
-        if keys_pressed[pygame.K_UP]:
+        """if keys_pressed[pygame.K_UP]:
             player_2.jump()
         if keys_pressed[pygame.K_LEFT]:
             player_2.animate()
@@ -166,7 +176,7 @@ def main():
             player_2.animate()
             player_2.right()
         if keys_pressed[pygame.K_p]:
-            player_2.bullet()
+            player_2.bullet()"""
 
 
 if __name__ == '__main__':
