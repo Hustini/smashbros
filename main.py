@@ -101,10 +101,10 @@ class Player(pygame.sprite.Sprite):
         if self.y > 500:
             sys.exit()
 
-    def bullet(self):
+    def bullet(self, speed):
         self.reload += 0.05
         if self.reload >= 5:
-            bullet = Bullet(self.rect.right, self.rect.centery, 1)
+            bullet = Bullet(self.rect.right, self.rect.centery, speed)
             bullet_group.add(bullet)
             self.reload = 0
 
@@ -165,7 +165,10 @@ def main():
             player.animate()
             player.right()
         if keys_pressed[pygame.K_SPACE]:
-            player.bullet()
+            if player.facing() == 'right':
+                player.bullet(1)
+            if player.facing() == 'left':
+                player.bullet(-1)
 
         """if keys_pressed[pygame.K_UP]:
             player_2.jump()
