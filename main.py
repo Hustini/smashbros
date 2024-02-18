@@ -16,6 +16,21 @@ TERMINAL_VELOCITY = 1
 JUMP = -7
 
 
+class HealthBar:
+    def __init__(self, x, y, w, h, max_hp):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.hp = max_hp
+        self.max_hp = max_hp
+
+    def draw(self, surface):
+        ratio = self.hp / self.max_hp
+        pygame.draw.rect(surface, "red", (self.x, self.y, self.w, self.h))
+        pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
+
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, speed):
         super().__init__()
@@ -123,6 +138,8 @@ player_2 = Player(500, 100, 'enemy/run/')
 moving_sprites.add(player)
 moving_sprites.add(player_2)
 bullet_group = pygame.sprite.Group()
+health_bar_1 = HealthBar(25, 25, 200, 30, 5)
+health_bar_2 = HealthBar(925, 25, 200, 30, 5)
 
 
 def draw_window(background, plattform):
@@ -132,6 +149,8 @@ def draw_window(background, plattform):
     moving_sprites.update()
     bullet_group.draw(WIN)
     bullet_group.update()
+    health_bar_1.draw(WIN)
+    health_bar_2.draw(WIN)
     pygame.display.flip()
 
 
