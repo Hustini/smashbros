@@ -204,7 +204,7 @@ def main():
             if player.facing() == 'left':
                 player.bullet(-1, -48)
 
-        """if keys_pressed[pygame.K_UP]:
+        if keys_pressed[pygame.K_UP]:
             player_2.jump()
         if keys_pressed[pygame.K_LEFT]:
             player_2.animate()
@@ -213,7 +213,10 @@ def main():
             player_2.animate()
             player_2.right()
         if keys_pressed[pygame.K_p]:
-            player_2.bullet()"""
+            if player_2.facing() == 'right':
+                player_2.bullet(1, 20)
+            if player_2.facing() == 'left':
+                player_2.bullet(-1, -48)
 
 
 if __name__ == '__main__':
