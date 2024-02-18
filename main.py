@@ -30,6 +30,9 @@ class HealthBar:
         pygame.draw.rect(surface, "red", (self.x, self.y, self.w, self.h))
         pygame.draw.rect(surface, "green", (self.x, self.y, self.w * ratio, self.h))
 
+    def reduce_hp(self):
+        self.hp -= 1
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, speed):
@@ -47,7 +50,7 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, animation_dir='player/run/', frames=6):
+    def __init__(self, x, y, x_health, animation_dir='player/run/', frames=6):
         super().__init__()
         self.sprites = []
         self.is_animating = False
@@ -62,7 +65,7 @@ class Player(pygame.sprite.Sprite):
         self.x = x
         self.reload = 5
         self.direction = 'right'
-        self.health = 5
+        self.health = HealthBar(x_health, 25, 200, 30, 5)
 
     def load_images(self, directory, frames):
         for i in range(frames):
@@ -125,21 +128,17 @@ class Player(pygame.sprite.Sprite):
             self.reload = 0
 
     def reduce_health(self):
-        self.health -= 1
-
-    def check_health(self):
-        if self.health == 0:
+        if self.health.hp == 0:
             self.kill()
+        self.health.reduce_hp()
 
 
 moving_sprites = pygame.sprite.Group()
-player = Player(200, 100)
-player_2 = Player(500, 100, 'enemy/run/')
+player = Player(200, 100, 25)
+player_2 = Player(500, 100, 925, 'enemy/run/')
 moving_sprites.add(player)
 moving_sprites.add(player_2)
 bullet_group = pygame.sprite.Group()
-health_bar_1 = HealthBar(25, 25, 200, 30, 5)
-health_bar_2 = HealthBar(925, 25, 200, 30, 5)
 
 
 def draw_window(background, plattform):
@@ -149,8 +148,8 @@ def draw_window(background, plattform):
     moving_sprites.update()
     bullet_group.draw(WIN)
     bullet_group.update()
-    health_bar_1.draw(WIN)
-    health_bar_2.draw(WIN)
+    for entity in moving_sprites:
+        entity.health.draw(WIN)
     pygame.display.flip()
 
 
@@ -186,7 +185,6 @@ def main():
         for bullet, players in bullet_player_collision.items():
             for hit_player in players:
                 hit_player.reduce_health()
-                hit_player.check_health()
                 print('Collision')
 
         keys_pressed = pygame.key.get_pressed()
